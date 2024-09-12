@@ -12,6 +12,9 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      animation: {
+        "spin-slow": "spin 3s linear infinite",
+      },
       rotate: {
         "0": "0deg",
         "90": "90deg",

@@ -1,10 +1,11 @@
 import { HiOutlineUpload } from "react-icons/hi";
 
-export default function UploadFile(props: {
+type UploadFileProps = {
   setPdfFile: (file: File) => void;
-  setPdfBuffer: (buffer: ArrayBuffer) => void;
-}) {
-  const { setPdfFile, setPdfBuffer } = props;
+};
+
+export default function UploadFile(props: UploadFileProps) {
+  const { setPdfFile } = props;
 
   /**
    * 处理文件上传的回调函数，选中 PDF 文件后读取其内容并存储。
@@ -16,8 +17,6 @@ export default function UploadFile(props: {
 
     if (file) {
       setPdfFile(file);
-      const arrayBuffer = await file.arrayBuffer();
-      setPdfBuffer(arrayBuffer);
     }
   };
 
