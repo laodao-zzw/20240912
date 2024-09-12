@@ -32,7 +32,7 @@ export default function RotatePDF() {
    * 将所有页面顺时针旋转90度，旋转角度在0到360度之间循环。
    */
   const rotateClockwiseAll = () => {
-    setRotations((prev) => prev.map((rotation) => (rotation + 90) % 360));
+    setRotations((prev) => prev.map((rotation) => rotation + 90));
   };
 
   /**
@@ -43,7 +43,7 @@ export default function RotatePDF() {
   const rotatePageRight = (pageIndex: number) => {
     setRotations((prev) => {
       const newRotations = [...prev];
-      newRotations[pageIndex] = (newRotations[pageIndex] + 90) % 360;
+      newRotations[pageIndex] = newRotations[pageIndex] + 90;
       return newRotations;
     });
   };
@@ -125,7 +125,7 @@ export default function RotatePDF() {
               <Document
                 file={pdfFile}
                 onLoadSuccess={onDocumentLoadSuccess}
-                className="flex justify-center"
+                className="flex justify-center flex-wrap"
                 loading={
                   <div className="m-3">
                     <AiOutlineLoading3Quarters />
@@ -149,15 +149,25 @@ export default function RotatePDF() {
                       <div className="overflow-hidden transition-transform">
                         <div className="relative h-full w-full flex flex-col justify-between items-center shadow-md p-3 bg-white hover:bg-gray-50">
                           <div className="pointer-events-none w-full shrink flex flex-col items-center">
-                            <Page
-                              width={176}
-                              height={248}
-                              pageNumber={index + 1}
-                              rotate={rotations[index]}
-                              renderTextLayer={false}
-                              renderAnnotationLayer={false}
-                              className="border"
-                            />
+                            <div
+                              style={{
+                                width: "100%",
+                                objectFit: "contain",
+                                transitionProperty: "transform",
+                                transitionTimingFunction:
+                                  "cubic-bezier(0.4, 0, 0.2, 1)",
+                                transitionDuration: "150ms",
+                                transform: `rotate(${rotations[index]}deg)`,
+                              }}
+                            >
+                              <Page
+                                width={176}
+                                height={248}
+                                pageNumber={index + 1}
+                                renderTextLayer={false}
+                                renderAnnotationLayer={false}
+                              />
+                            </div>
                             <div className="w-[90%] text-center shrink-0 text-xs italic overflow-hidden text-ellipsis whitespace-nowrap">
                               {index + 1}
                             </div>
