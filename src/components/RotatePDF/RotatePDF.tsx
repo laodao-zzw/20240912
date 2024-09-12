@@ -1,5 +1,6 @@
 "use client";
 import { HiOutlineUpload } from "react-icons/hi";
+import { AiOutlineSync } from "react-icons/ai";
 import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { PDFDocument, degrees } from "pdf-lib";
@@ -31,10 +32,12 @@ export default function RotatePDF() {
     setRotations(new Array(numPages).fill(0));
   };
 
+  // 旋转全部页面
   const rotateClockwiseAll = () => {
     setRotations((prev) => prev.map((rotation) => (rotation + 90) % 360));
   };
 
+  // 旋转单个页面
   const rotatePageRight = (pageIndex: number) => {
     setRotations((prev) => {
       const newRotations = [...prev];
@@ -140,22 +143,24 @@ export default function RotatePDF() {
                         onClick={() => rotatePageRight(index)}
                         className="absolute z-10 top-1 right-1 rounded-full p-1 hover:scale-105 hover:fill-white bg-[#ff612f] fill-white"
                       >
-                        {/* <ArrowPathIcon className="w-6 h-6 text-white" /> */}
+                        <AiOutlineSync className="text-white" />
                       </div>
 
                       <div className="overflow-hidden transition-transform">
                         <div className="relative h-full w-full flex flex-col justify-between items-center shadow-md p-3 bg-white hover:bg-gray-50">
-                          <Page
-                            width={176}
-                            height={248}
-                            pageNumber={index + 1}
-                            rotate={rotations[index]}
-                            renderTextLayer={false}
-                            renderAnnotationLayer={false}
-                            className="border"
-                          />
-                          <div className="w-[90%] text-center shrink-0 text-xs italic overflow-hidden text-ellipsis whitespace-nowrap">
-                            {index + 1}
+                          <div className="pointer-events-none w-full shrink">
+                            <Page
+                              width={176}
+                              height={248}
+                              pageNumber={index + 1}
+                              rotate={rotations[index]}
+                              renderTextLayer={false}
+                              renderAnnotationLayer={false}
+                              className="border"
+                            />
+                            <div className="w-[90%] text-center shrink-0 text-xs italic overflow-hidden text-ellipsis whitespace-nowrap">
+                              {index + 1}
+                            </div>
                           </div>
                         </div>
                       </div>
