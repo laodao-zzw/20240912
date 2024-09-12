@@ -1,17 +1,19 @@
 "use client";
 import { HiOutlineUpload } from "react-icons/hi";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { PDFDocument, degrees } from "pdf-lib";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export default function RotatePDF() {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState(0);
   const [rotations, setRotations] = useState<number[]>([]);
   const [pdfBuffer, setPdfBuffer] = useState<ArrayBuffer | null>(null);
+
+  useEffect(() => {
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+  }, []);
 
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -68,7 +70,7 @@ export default function RotatePDF() {
     setNumPages(0);
     setRotations([]);
     setPdfBuffer(null);
-  }
+  };
 
   return (
     <main className="flex-grow flex flex-col items-center justify-center px-4 text-center">

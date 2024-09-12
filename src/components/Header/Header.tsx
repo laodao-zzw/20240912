@@ -34,7 +34,7 @@ export default function Header() {
             strokeLinejoin="round"
           />
         </svg>
-        <span className="font-bold text-xl">PDFai</span>
+        <span className="font-bold text-xl">PDF.ai</span>
       </Link>
       <nav className="hidden md:flex space-x-4">
         <Link href="/pricing" className="text-gray-600 hover:text-gray-900">
