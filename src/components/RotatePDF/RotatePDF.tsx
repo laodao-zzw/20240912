@@ -1,43 +1,45 @@
 "use client";
-import { HiOutlineUpload } from "react-icons/hi";
 import { AiOutlineSync } from "react-icons/ai";
 import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { PDFDocument, degrees } from "pdf-lib";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 
+import UploadFile from "./UploadFile";
+
 export default function RotatePDF() {
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [numPages, setNumPages] = useState(0);
-  const [rotations, setRotations] = useState<number[]>([]);
-  const [pdfBuffer, setPdfBuffer] = useState<ArrayBuffer | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null); // 存储上传的 PDF 文件对象
+  const [numPages, setNumPages] = useState<number>(0); // 存储 PDF 文件的总页数
+  const [rotations, setRotations] = useState<number[]>([]); // 存储每个页面的旋转角度
+  const [pdfBuffer, setPdfBuffer] = useState<ArrayBuffer | null>(null); // 存储 PDF 文件的二进制数据
 
   useEffect(() => {
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
   }, []);
 
-  const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      setPdfFile(file);
-      const arrayBuffer = await file.arrayBuffer();
-      setPdfBuffer(arrayBuffer);
-    }
-  };
-
+  /**
+   * 文档加载成功时的回调函数，设置总页数并初始化每页的旋转角度为0。
+   *
+   * @param {Object} param0 - 包含文档总页数的对象。
+   * @param {number} param0.numPages - 文档的总页数。
+   */
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    // 获取总页数
-    setNumPages(numPages);
+    setNumPages(numPages); // 获取总页数
     setRotations(new Array(numPages).fill(0));
   };
 
-  // 旋转全部页面
+  /**
+   * 将所有页面顺时针旋转90度，旋转角度在0到360度之间循环。
+   */
   const rotateClockwiseAll = () => {
     setRotations((prev) => prev.map((rotation) => (rotation + 90) % 360));
   };
 
-  // 旋转单个页面
+  /**
+   * 将指定索引的页面旋转90度，旋转角度在0到360度之间循环。
+   *
+   * @param {number} pageIndex - 要旋转的页面索引。
+   */
   const rotatePageRight = (pageIndex: number) => {
     setRotations((prev) => {
       const newRotations = [...prev];
@@ -46,33 +48,46 @@ export default function RotatePDF() {
     });
   };
 
+  /**
+   * 下载旋转后的 PDF 文件。
+   *
+   * 该函数加载原始 PDF 文件，根据用户记录的旋转角度对每个页面进行旋转，
+   * 然后保存并生成下载链接，自动下载处理后的 PDF 文件。
+   */
   const downloadRotatedPDF = async () => {
     if (!pdfBuffer) return;
 
-    const pdfDoc = await PDFDocument.load(pdfBuffer); // 加载原始 PDF 文件
-    const pages = pdfDoc.getPages(); // 获取所有页面
+    try {
+      const pdfDoc = await PDFDocument.load(pdfBuffer); // 加载原始 PDF 文件
+      const pages = pdfDoc.getPages(); // 获取所有页面
 
-    // 对每个页面应用旋转
-    pages.forEach((page, index) => {
-      page.setRotation(degrees(rotations[index])); // 根据用户旋转记录旋转页面
-    });
+      pages.forEach((page, index) => {
+        page.setRotation(degrees(rotations[index])); // 根据用户旋转记录旋转页面
+      });
 
-    // 保存修改后的 PDF 文件
-    const pdfBytes = await pdfDoc.save();
+      const pdfBytes = await pdfDoc.save(); // 保存修改后的 PDF 文件
 
-    // 创建下载链接
-    const blob = new Blob([pdfBytes], { type: "application/pdf" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${pdfFile?.name}(pdf.ai-rotated).pdf`;
-    link.click();
+      // 创建下载链接
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${pdfFile?.name}(pdf.ai-rotated).pdf`;
+      link.click();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  /**
+   * 移除当前上传的 PDF 文件并重置相关状态。
+   *
+   * 该函数清空 PDF 文件、页面数量、旋转角度数组和 PDF 缓冲区的状态。
+   */
   const removePdfFile = () => {
-    setPdfFile(null);
-    setNumPages(0);
-    setRotations([]);
-    setPdfBuffer(null);
+    setPdfFile(null); // 清除 PDF 文件对象
+    setNumPages(0); // 重置页面数量
+    setRotations([]); // 清空旋转角度数组
+    setPdfBuffer(null); // 清空 PDF 缓冲区
   };
 
   return (
@@ -85,28 +100,7 @@ export default function RotatePDF() {
         </p>
 
         {!pdfFile && (
-          <div className="w-full flex justify-center">
-            <div className="h-[350px] relative text-center w-[275px]">
-              <label
-                htmlFor="file-upload"
-                className="h-full flex items-center justify-center border rounded transition-all bg-white border-dashed border-stone-300"
-              >
-                <div className="cursor-pointer flex flex-col items-center space-y-3">
-                  <HiOutlineUpload className="w-12 h-12 text-gray-400 mb-2" />
-                  <p className="text-gray-500">
-                    Click to upload or drag and drop
-                  </p>
-                </div>
-              </label>
-              <input
-                id="file-upload"
-                type="file"
-                accept=".pdf"
-                onChange={(e) => onFileChange(e)}
-                className="cursor-pointer hidden"
-              />
-            </div>
-          </div>
+          <UploadFile setPdfFile={setPdfFile} setPdfBuffer={setPdfBuffer} />
         )}
 
         {pdfFile && (
