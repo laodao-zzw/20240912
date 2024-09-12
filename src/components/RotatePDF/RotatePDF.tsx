@@ -150,13 +150,8 @@ export default function RotatePDF() {
                         <div className="relative h-full w-full flex flex-col justify-between items-center shadow-md p-3 bg-white hover:bg-gray-50">
                           <div className="pointer-events-none w-full shrink flex flex-col items-center">
                             <div
+                              className="w-full object-contain transition-transform duration-150 ease-[cubic-bezier(0.4,_0,_0.2,_1)]"
                               style={{
-                                width: "100%",
-                                objectFit: "contain",
-                                transitionProperty: "transform",
-                                transitionTimingFunction:
-                                  "cubic-bezier(0.4, 0, 0.2, 1)",
-                                transitionDuration: "150ms",
                                 transform: `rotate(${rotations[index]}deg)`,
                               }}
                             >
