@@ -55,28 +55,37 @@ export default function PdfDocument(props: PdfDocumentProps) {
    * 然后保存并生成下载链接，自动下载处理后的 PDF 文件。
    */
   const downloadRotatedPDF = async () => {
-    const arrayBuffer = await pdfFile?.arrayBuffer();
-
-    if (!arrayBuffer) return;
+    if (!pdfFile) return;
 
     try {
+      const arrayBuffer = await pdfFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer); // 加载原始 PDF 文件
       const pages = pdfDoc.getPages(); // 获取所有页面
 
       pages.forEach((page, index) => {
-        page.setRotation(degrees(rotations[index])); // 根据用户旋转记录旋转页面
+        const rotation = rotations[index] || 0;
+        page.setRotation(degrees(rotation)); // 根据用户旋转记录旋转页面
       });
 
       const pdfBytes = await pdfDoc.save(); // 保存修改后的 PDF 文件
 
+      const originalName = pdfFile.name.replace(/\.pdf$/i, ""); // 去掉原始文件名中的 .pdf 后缀
+      const downloadFileName = `${originalName}(pdf.ai-rotated).pdf`;
+
       // 创建下载链接
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `${pdfFile?.name}(pdf.ai-rotated).pdf`;
+      const url = URL.createObjectURL(blob);
+
+      link.href = url;
+      link.download = downloadFileName;
       link.click();
+
+      // 清理 URL 对象和移除链接
+      URL.revokeObjectURL(url);
+      link.remove();
     } catch (error) {
-      console.log(error);
+      console.error("Error downloading rotated PDF:", error);
     }
   };
 
