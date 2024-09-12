@@ -163,7 +163,7 @@ export default function RotatePDF() {
                                 renderAnnotationLayer={false}
                               />
                             </div>
-                            <div className="w-[90%] text-center shrink-0 text-xs italic overflow-hidden text-ellipsis whitespace-nowrap">
+                            <div className="w-[90%] text-center shrink-0 text-xs italic overflow-hidden text-ellipsis whitespace-nowrap select-none">
                               {index + 1}
                             </div>
                           </div>
