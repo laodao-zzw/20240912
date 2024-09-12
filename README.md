@@ -21,3 +21,6 @@ pnpm dev
 # or
 bun dev
 ```
+http://localhost:3000/rotate-pdf
+
+https://20240912.vercel.app/rotate-pdf
