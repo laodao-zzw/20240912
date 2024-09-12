@@ -1,5 +1,5 @@
 "use client";
-import { AiOutlineSync } from "react-icons/ai";
+import { AiOutlineSync, AiOutlineLoading3Quarters } from "react-icons/ai";
 import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { PDFDocument, degrees } from "pdf-lib";
@@ -96,11 +96,15 @@ export default function RotatePDF() {
         <h1 className="text-5xl font-serif mb-4">Rotate PDF Pages</h1>
         <p className="text-gray-600 text-center mb-8 max-w-2xl">
           Simply click on a page to rotate it. You can then download your
+          <br />
           modified PDF.
         </p>
 
         {!pdfFile && (
-          <UploadFile setPdfFile={setPdfFile} setPdfBuffer={setPdfBuffer} />
+          <UploadFile
+            setPdfFile={setPdfFile}
+            setPdfBuffer={setPdfBuffer}
+          />
         )}
 
         {pdfFile && (
@@ -125,6 +129,7 @@ export default function RotatePDF() {
                 file={pdfFile}
                 onLoadSuccess={onDocumentLoadSuccess}
                 className="flex justify-center"
+                loading={<AiOutlineLoading3Quarters />}
               >
                 {Array.from(new Array(numPages), (el, index) => (
                   <div
