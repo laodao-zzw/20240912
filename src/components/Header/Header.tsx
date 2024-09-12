@@ -48,10 +48,7 @@ export default function Header() {
         <Link href="/use-cases" className="text-gray-600 hover:text-gray-900">
           Use cases
         </Link>
-        <Link
-          href="/get-started"
-          className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
-        >
+        <Link href="/get-started" className="text-gray-600 hover:text-gray-900">
           Get started →
         </Link>
       </nav>
