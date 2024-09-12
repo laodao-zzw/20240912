@@ -101,10 +101,7 @@ export default function RotatePDF() {
         </p>
 
         {!pdfFile && (
-          <UploadFile
-            setPdfFile={setPdfFile}
-            setPdfBuffer={setPdfBuffer}
-          />
+          <UploadFile setPdfFile={setPdfFile} setPdfBuffer={setPdfBuffer} />
         )}
 
         {pdfFile && (
@@ -124,12 +121,16 @@ export default function RotatePDF() {
               </button>
             </div>
 
-            <div className="flex flex-wrap justify-center">
+            <div className="flex flex-wrap justify-center mt-5">
               <Document
                 file={pdfFile}
                 onLoadSuccess={onDocumentLoadSuccess}
                 className="flex justify-center"
-                loading={<AiOutlineLoading3Quarters />}
+                loading={
+                  <div className="m-3">
+                    <AiOutlineLoading3Quarters />
+                  </div>
+                }
               >
                 {Array.from(new Array(numPages), (el, index) => (
                   <div
@@ -147,7 +148,7 @@ export default function RotatePDF() {
 
                       <div className="overflow-hidden transition-transform">
                         <div className="relative h-full w-full flex flex-col justify-between items-center shadow-md p-3 bg-white hover:bg-gray-50">
-                          <div className="pointer-events-none w-full shrink">
+                          <div className="pointer-events-none w-full shrink flex flex-col items-center">
                             <Page
                               width={176}
                               height={248}
@@ -168,7 +169,7 @@ export default function RotatePDF() {
                 ))}
               </Document>
             </div>
-            <div>
+            <div className="flex flex-col justify-center items-center space-y-3 selecto-ignore mt-5">
               <button
                 onClick={downloadRotatedPDF}
                 className="bg-[#ff5733] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#e64d2e] transition-colors"
